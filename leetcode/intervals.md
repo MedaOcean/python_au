@@ -6,7 +6,6 @@
 
 https://leetcode.com/problems/non-overlapping-intervals/
 
-
 '''python
 class Solution:
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:

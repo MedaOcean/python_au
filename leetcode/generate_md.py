@@ -17,10 +17,7 @@ g=open('intervals.md', "x")
 g.write(a+'\n'+'\n')
 g.write(b+'\n'+'\n')
 g.write(c+'\n'+'\n')
-g.write(s_1+'\n'+'\n')
+g.write(s_1+'\n')
 g.write(p+'\n')
 g.write(n+'\n')
 g.write(m+'\n')
-
-
-
