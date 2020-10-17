@@ -1,3 +1,5 @@
+import sys
+
 LINK_SOLUTION_SEPARATE = '<---end.markdown links--->'
 def get_all_lines_from_file(file_name):
     file=open(file_name)
@@ -30,10 +32,16 @@ class Task:
             ''.join(map(lambda x: x[4:], self.sourse_code)))
     def get_md_task_content(self):
         return self.get_md_link(), '{}\n\n{}\n\n{}'.format(self.get_md_title(), self.link, self.get_md_python_solution())
-sourse_lines = get_all_lines_from_file('in.txt')
-task = Task(sourse_lines[0], sourse_lines[1], sourse_lines[3:] )
-new_md_link, new_md_task = task.get_md_task_content()
-old_md_links,old_md_task = get_file_content("intervals.md").split("<---end.markdown links--->")
-write_to_md_file("intervals.md", merge_solution(old_md_links, old_md_task, new_md_link, new_md_task))
+
+def main(a,b):
+    sourse_lines = get_all_lines_from_file(a)
+    task = Task(sourse_lines[0], sourse_lines[1], sourse_lines[3:])
+    new_md_link, new_md_task = task.get_md_task_content()
+    old_md_links,old_md_task = get_file_content(b).split("<---end.markdown links--->")
+    write_to_md_file(b, merge_solution(old_md_links, old_md_task, new_md_link, new_md_task))
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2])
+
 
 
