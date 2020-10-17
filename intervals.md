@@ -4,8 +4,11 @@
 + [Insert Interval](#insert-interval)<---end.markdown links--->
 
 ## Non-overlapping Intervals
+
+https://leetcode.com/problems/non-overlapping-intervals/
+
 ``` python
-eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
     p = intervals[0]
     deleted = 0
     for c in range(1, len(intervals)):
@@ -18,8 +21,10 @@ eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
             p = intervals[c]
     return(deleted)
 ```
-
 ## Merge Intervals
+
+https://leetcode.com/problems/merge-intervals/
+
 ``` python
 def merge(self, intervals: List[List[int]]) -> List[List[int]]:
             m = [intervals[0]]
@@ -31,8 +36,10 @@ def merge(self, intervals: List[List[int]]) -> List[List[int]]:
                     m.append(c)
             return(m)
 ```
-
 ## Insert Interval
+
+https://leetcode.com/problems/insert-interval/
+
 ``` python
 def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
     r = []
