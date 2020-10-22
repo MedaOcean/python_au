@@ -4,7 +4,11 @@
 + [Linked List Cycle](#linked-list-cycle)
 + [Intersection of Two Linked Lists](#intersection-of-two-linked-lists)<---end.markdown links--->
 
+
 ## Middle of the Linked List
+
+https://leetcode.com/problems/middle-of-the-linked-list/
+
 ``` python
 def middleNode(self, head: ListNode) -> ListNode:
     node = head
@@ -18,6 +22,9 @@ def middleNode(self, head: ListNode) -> ListNode:
 ```
 
 ## Palindrome Linked List
+
+https://leetcode.com/problems/palindrome-linked-list/
+
 ``` python
 def isPalindrome(self, head: ListNode) -> bool:
     t = head
@@ -45,6 +52,9 @@ def isPalindrome(self, head: ListNode) -> bool:
 ```
 
 ## Linked List Cycle
+
+https://leetcode.com/problems/linked-list-cycle/
+
 ``` python
 def hasCycle(self, head: ListNode) -> bool:
     if not head.next:
@@ -60,6 +70,9 @@ def hasCycle(self, head: ListNode) -> bool:
 ```
 
 ## Intersection of Two Linked Lists
+
+https://leetcode.com/problems/intersection-of-two-linked-lists/
+
 ``` python
 def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
     s=headA
