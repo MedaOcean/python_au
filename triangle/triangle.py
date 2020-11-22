@@ -42,7 +42,6 @@ def from_string_to_square(s):
         return square_of_triangle(l_1, l_2, l_3)
     else:
         return 0
-
 def main (a,b):
     source_lines = get_all_lines_from_file(a)
     triangle = source_lines
