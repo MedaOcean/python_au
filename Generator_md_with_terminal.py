@@ -25,11 +25,11 @@ class Task:
         self.sourse_code = sourse_code
     def get_md_link(self):
         return '+ [{}](#{})'.format(self.title, self.link[30:(len(self.link)-1)])
-    def get_md_title(self):
+    def get_md_title(self):map(lambda x: x[4:], self.sourse_code
         return '## {}'.format(self.title)
     def get_md_python_solution(self):
         return '``` python\n{}\n```'.format(
-            ''.join(map(lambda x: x[4:], self.sourse_code)))
+            ''.join()))
     def get_md_task_content(self):
         return self.get_md_link(), '{}\n\n{}\n\n{}'.format(self.get_md_title(), self.link, self.get_md_python_solution())
 
