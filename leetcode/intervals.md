@@ -1,9 +1,6 @@
 
 + [Non-overlapping Intervals](#non-overlapping-intervals)
 + [Merge Intervals](#merge-intervals)
-+ [Insert Interval](#insert-interval)
-+ [Insert Interval](#insert-interval)
-+ [Insert Interval](#insert-interval)
 + [Insert Interval](#insert-interval)<---end.markdown links--->
 
 ## Non-overlapping Intervals
@@ -38,60 +35,6 @@ def merge(self, intervals: List[List[int]]) -> List[List[int]]:
                 else:
                     m.append(c)
             return(m)
-```
-## Insert Interval
-
-https://leetcode.com/problems/insert-interval/
-
-``` python
-def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-    r = []
-    a = newInterval[0]
-    b = newInterval[1]
-    for s, e in intervals:
-        if e < a or s > b:
-            r.append([s, e])
-        else:
-            a = min(a, s)
-            b = max(b, e)
-    r + = [[a, b]]
-    return(sorted(r))
-```
-## Insert Interval
-
-https://leetcode.com/problems/insert-interval/
-
-``` python
-def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-    r = []
-    a = newInterval[0]
-    b = newInterval[1]
-    for s, e in intervals:
-        if e < a or s > b:
-            r.append([s, e])
-        else:
-            a = min(a, s)
-            b = max(b, e)
-    r + = [[a, b]]
-    return(sorted(r))
-```
-## Insert Interval
-
-https://leetcode.com/problems/insert-interval/
-
-``` python
-def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-    r = []
-    a = newInterval[0]
-    b = newInterval[1]
-    for s, e in intervals:
-        if e < a or s > b:
-            r.append([s, e])
-        else:
-            a = min(a, s)
-            b = max(b, e)
-    r + = [[a, b]]
-    return(sorted(r))
 ```
 ## Insert Interval
 
