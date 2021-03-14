@@ -72,3 +72,62 @@ def check_requests(username, repos, state='open'):
         res = 'Title: {}\nVerify_Result: {}'.format(title, title_errors)
         fin.append(res)
     return fin
+
+def send_check_result(pull, comment):
+    if len(comment) > 0:
+        r = requests.post(pull['url']+'/comments', headers=get_headers(), data=json.dumps(check_requests(pull, comment)).encode('utf8'))
+
+
+def maximum_date(lst, num, num_1, piece_1, piece_2, spliter):
+    lst_2 = []
+    for i in lst:
+        i = i.split('T')
+        lst_1 = i[num].split(spliter)
+        lst_2.append(int(lst_1[num_1]))
+    res = []
+    for i in lst:
+        if int(i[piece_1:piece_2]) == max(lst_2):
+            res.append(i)
+    return res
+
+
+def last_comment_on_pull(url):
+    response = requests.get('{}/comments'.format(url), headers=get_headers())
+    resp = response.json()
+    dates = []
+    for j in resp:
+        date = j.get('created_at')
+        dates.append(date)
+    return last_note(dates)
+
+
+def last_note(lst_1):
+    lst = []
+    for i in lst_1:
+        lst.append(i[0:19])
+    max_years = maximum_date(lst, 0, 0, 0, 4, '-')
+    max_months = maximum_date(max_years, 0, 1, 5, 7, '-')
+    max_day = maximum_date(max_months, 0, 2, 8, 10, '-')
+    max_hour = maximum_date(max_day, 1, 0, 11, 13, ':')
+    max_min = maximum_date(max_hour, 1, 1, 14, 16, ':')
+    max_sec = maximum_date(max_min, 1, 2, 17, 19, ':')
+    return max_sec[0]
+
+
+def check_commits(username, repos, state='open'):
+    pulls = get_user_pull_request(username, repos, state='open')
+    for i in pulls:
+        j = i.get('url')
+        response = requests.get('{}/commits'.format(j), headers=get_headers())
+        resp = response.json()
+        dates = []
+        for i in resp:
+            dict_1 = i.get('commit')
+            dict_2 = dict_1.get('author')
+            date = dict_2.get('date')
+            dates.append(date)
+        last_comment = last_comment_on_pull(j)
+        last_commit = last_note(dates)
+        lst = [last_comment, last_commit]
+        if last_commit == last_note(lst):
+            verify_result(last_commit)
