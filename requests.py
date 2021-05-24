@@ -1,17 +1,20 @@
 import requests
 import json
-GITHUB_TOKEN = '1ee7ae9c9d2d53b67a21772de76c572bfc54d850'
+
+
+GITHUB_TOKEN = ''
 notice = 'Everything is fine'
 notice_1 = 'Title is not suppose to be empty line'
 notice_2 = 'Title suppose to contain more than 2 words'
-notice_3 = 'Title is suppose to contain project name in capital letters and group number separated by a - as a first world'
-project_names = ['VERIFICATION', 'GENERATOR', 'LEETCODE', 'HEXNUMBER', 'ITERATOR', 'TRIANGLE', 'REQUESTS']
+notice_3 = 'Title is suppose to contain project name in capital letters and group number separated ' \
+           'by a - as a first world'
 notice_4 = 'Title is suppose to contain project name in capital letters'
 notice_5 = 'Title is suppose to contain project name in CAPITAL letters'
-numbers_of_group = ['1021', '1022', '1013']
 notice_6 = 'Title is suppose to contain number of group without punctuation marks'
-words_of_action = ['Added', 'Fixed', 'Created']
 notice_7 = 'Title is suppose to contain action taken'
+TASK_PREFIX = ['LEETCODE', 'GENERATOR', 'TRIANGLE', 'HEXNUMBER', 'ITERATOR', 'REQUESTS']
+GROUP = ['1021', '1022']
+ACTION = ['Added', 'Deleted', 'Refactored', 'Deleted', 'Moved']
 
 
 def get_headers():
@@ -27,12 +30,7 @@ def get_user_pull_request(username, repos, state='open'):
 def get_user_commits(url):
     response = requests.get('{}/commits'.format(url), headers=get_headers())
     resp = response.json()
-    res = []
-    for j in resp:
-        dict_1 = j.get('commit')
-        mes = dict_1.get('message')
-        res.append(mes)
-    return res
+    return resp
 
 
 def check_prefix(title):
@@ -43,17 +41,17 @@ def check_prefix(title):
     if len(lst) < 2:
         return notice_2
     lst_1 = lst[0].split('-')
-    if lst[1] not in words_of_action:
+    if lst[1] not in ACTION:
         errors.append(notice_7)
     if len(lst_1) < 2:
         errors.append(notice_3)
     else:
-        if lst_1[0] not in project_names:
-            if lst_1[0].upper() not in project_names:
+        if lst_1[0] not in TASK_PREFIX:
+            if lst_1[0].upper() not in TASK_PREFIX:
                 errors.append(notice_4)
             else:
                 errors.append(notice_5)
-        if lst_1[1] not in numbers_of_group:
+        if lst_1[1] not in GROUP:
             errors.append(notice_6)
     result = ''
     for i in errors:
@@ -61,33 +59,18 @@ def check_prefix(title):
     return result
 
 
-def check_requests(username, repos, state='open'):
-    pulls = get_user_pull_request(username, repos, state='open')
-    fin = []
-    for i in pulls:
-        title = i.get('title')
-        title_errors = check_prefix(title)
-        if title_errors == '':
-            title_errors = notice
-        res = 'Title: {}\nVerify_Result: {}'.format(title, title_errors)
-        fin.append(res)
-    return fin
-
-def send_check_result(pull, comment):
-    if len(comment) > 0:
-        r = requests.post(pull['url']+'/comments', headers=get_headers(), data=json.dumps(check_requests(pull, comment)).encode('utf8'))
-
-
 def maximum_date(lst, num, num_1, piece_1, piece_2, spliter):
     lst_2 = []
     for i in lst:
-        i = i.split('T')
-        lst_1 = i[num].split(spliter)
-        lst_2.append(int(lst_1[num_1]))
-    res = []
+        if type(i) == str:
+            i = i.split('T')
+            lst_1 = i[num].split(spliter)
+            lst_2.append(int(lst_1[num_1]))
+            res = []
     for i in lst:
-        if int(i[piece_1:piece_2]) == max(lst_2):
-            res.append(i)
+        if type(i) == str and lst_2 is not None:
+            if int(i[piece_1:piece_2]) == max(lst_2):
+                res.append(i)
     return res
 
 
@@ -98,7 +81,7 @@ def last_comment_on_pull(url):
     for j in resp:
         date = j.get('created_at')
         dates.append(date)
-    return last_note(dates)
+    return dates
 
 
 def last_note(lst_1):
@@ -114,20 +97,40 @@ def last_note(lst_1):
     return max_sec[0]
 
 
-def check_commits(username, repos, state='open'):
-    pulls = get_user_pull_request(username, repos, state='open')
-    for i in pulls:
-        j = i.get('url')
-        response = requests.get('{}/commits'.format(j), headers=get_headers())
-        resp = response.json()
-        dates = []
-        for i in resp:
-            dict_1 = i.get('commit')
+def send_pr_comment(pr, comment):
+    data = {'body': comment,
+            'path': requests.get(pr['url']+'/files', headers=get_headers()).json()[0]['filename'],
+            'position': 1,
+            'commit_id': pr['head']['sha']}
+    r = requests.post(pr['url']+'/comments', headers=get_headers(), json=data)
+
+
+def verify_pr(p):
+    j = p.get('url')
+    resp = get_user_commits(j)
+    dates = []
+    for pr in resp:
+        dict_1 = pr.get('commit')
+        dict_2 = dict_1.get('author')
+        date = dict_2.get('date')
+        dates.append(date)
+    last_comment = last_comment_on_pull(j)
+    last_commit = last_note(dates)
+    lst = [last_comment, last_commit]
+    if last_commit == last_note(lst):
+        for pr in resp:
+            dict_1 = pr.get('commit')
             dict_2 = dict_1.get('author')
             date = dict_2.get('date')
-            dates.append(date)
-        last_comment = last_comment_on_pull(j)
-        last_commit = last_note(dates)
-        lst = [last_comment, last_commit]
-        if last_commit == last_note(lst):
-            verify_result(last_commit)
+            title = dict_1.get('message')
+            date = date[0:19]
+            if date == last_commit:
+                verification_res = check_prefix(title)
+                res = 'Verify_Result: {}'.format(verification_res)
+    send_pr_comment(p, res)
+
+
+def main(username, repos, state='open'):
+    pulls = get_user_pull_request(username, repos, state='open')
+    for i in pulls:
+      verify_pr(i)
